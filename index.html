@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Trendybox</title>
+	<link type="text/css" rel="stylesheet"  href="lib/styles.css" media="all" />
+	<script src="lib/jquery.js" type="text/javascript" language="javascript"></script>
+	<script src="jquery.trendybox.js" type="text/javascript" language="javascript"></script>
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".trendybox").trendybox();
+		});
+	</script>
+	<script type="text/html" id="item_tmpl">
+	  <div class="trendybox_data">
+		<%=object%>
+	    <div class="comments">
+	      <h3><a href="/node/<%=id%>"><%=title%></a></h3>
+	   	  <p><a href="/node/<%=id%>">Comments (<%=comments%>)</a></p>
+	    </div>
+	  </div>
+	</script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var dataObject = {
+				id : 30,
+				comments : 20,
+				title : 'hello',
+				object : 'the trendybox object'
+			}
+			var str = tmpl("item_tmpl", dataObject);
+			$("#debug").html(str);
+			var dataObject = {
+				id : 76,
+				comments : 32,
+				title : 'new data',
+				object : 'new trendy object'
+			}
+			var str = tmpl("item_tmpl", dataObject);
+			$("#debug").append(str);
+		});
+	</script>
+		
+		
+</head>
+<body>
+	<div class="container">
+		<h1>Trendybox</h1>
+	 	<div class="single-images">
+	 	
+	 	</div>
+		<div class="gallery">
+			
+		</div>
+ 		<ul class="menu">
+ 			<li><a href="examples/custom-styles.html">Custom Styles</a></li>
+ 			<li><a href="examples/callbacks.html">Callbacks</a></li>
+ 			<li><a href="options.html">Options Reference</a></li>
+ 		</ul>
+		<div id="debug"></div>
+	</div>
+</body>
+</html>
