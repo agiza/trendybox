@@ -11,7 +11,7 @@
 
 	<script type="text/html" id="item_tmpl">
 	  <div class="trendybox_data">
-		<%=object%>
+		<%=content%>
 	    <div class="comments">
 	      <h3><a href="/node/<%=id%>"><%=title%></a></h3>
 	   	  <p><a href="/node/<%=id%>">Comments (<%=comments%>)</a></p>
@@ -43,24 +43,25 @@
 	</script>
 	<script type="text/javascript">
 		$(document).ready(function(){
-			var dataObject = {
-				id : 76,
-				comments : 32,
-				title : 'new data',
-				object : 'new trendy object'
-			}
 			$(".trendybox").trendybox({
-				template : $("#item_tmpl").html(),
-				obj : dataObject
+				//template : $("#item_tmpl").html(),
+				//obj : dataObject
+				trigger : '.trigger',
+				template_selectors : new Object('.title', '.comment', '.comment_total')
 			});
 		});
 	</script>
 	<style type="text/css">
 		
 		#trendybox_outer{ position:fixed; height:100%; width:100%; top:0; left:0; right:0; bottom:0; z-index:9997;}
-		#trendybox_overlay{  position:absolute;height:100%; width:100%; background:#000; opacity:0.5;  z-index:9998;}
-		#trendybox_inner{  z-index:9999;  position:absolute; top:20px; height:100px; width:100px; background:#fff; left:50%; margin-left:-50px;}
+		#trendybox_overlay{  position:absolute;height:100%; width:100%; background:#000; opacity:1;  z-index:9998;}
+		#trendybox_inner{  z-index:9999;  position:absolute; top:20px; height:100px; width:100px; background:#fff; left:50%; margin-left:-50px; opacity:1; }
 		#trendybox_outer img{ border:none;}
+		
+		.single-images{ overflow:hidden;}
+		.single-images .trendybox{ float:left; width:135px; height:90px; position:relative; }
+		.single-images .trendybox .trigger{ position:absolute; top:5px; right:5px; background:#fff; text-decoration:none; display:block; padding:4px 10px;}
+		.single-images .trendybox .trigger:hover{ background:#6699cc; color:#fff;}
 	</style>
 		
 </head>
@@ -69,16 +70,25 @@
 		<h1>Trendybox</h1>
 	 	<div class="single-images">
 	 		<div class="trendybox">
-				<a href="images/nice.jpg" class="trigger">zoom</a>
+				<a href="images/nice.jpg" class="trigger" onclick="return false;">zoom</a>
 				<img src="images/nice-thumb.jpg" />
+				<div class="title hide">the title of number one</div>
+				<div class="id hide">111</div>
+				<div class="comment_total hide">11</div>
 			</div>
 			<div class="trendybox">
 				<a href="images/nice.jpg" class="trigger">zoom</a>
 				<img src="images/nice-thumb.jpg" />
+				<div class="title hide">the title of number three</div>
+				<div class="id hide">222</div>
+				<div class="comment_total hide">22</div>
 			</div>
 			<div class="trendybox">
 				<a href="images/nice.jpg" class="trigger">zoom</a>
 				<img src="images/nice-thumb.jpg" />
+				<div class="title hide">the title of number three</div>
+				<div class="id hide">333</div>
+				<div class="comment_total hide">33</div>
 			</div>
 			
 	 	</div>

@@ -103,7 +103,8 @@ TODO:
 	     * @public
 	     */
 	    version: "0.1"
-
+		// helper functions
+		
 	}
 	
 	var ua = navigator.userAgent.toLowerCase();
@@ -138,10 +139,11 @@ TODO:
 			before :          null,
 			after :           null,
 			build :           null,
-			template : 		'<%=object%>',
+			template : 		'<%=content%>',
 			overlay_color : 'transparent',
 			overlay_opacity : 1,
 			trigger : 		'.trendybox',
+			template_selectors : [],
 			obj : null
 		};
 	
@@ -172,7 +174,7 @@ TODO:
 			methods.hide();
 		});		
 		
-		if(!$items.hasClass(settings.trigger.replace(/[^a-zA-Z0-9]+/g,''))){
+		/*	if(!$items.hasClass(settings.trigger.replace(/[^a-zA-Z0-9]+/g,''))){
 			$trigger = $items.find(settings.trigger);
 			$trigger.click(function(){
 				methods.show();
@@ -184,16 +186,20 @@ TODO:
 				return false;
 			});
 		}
-		
-
+		*/
+		trigger = methods.get_element($items, settings.trigger);
+		trigger.click(function(){
+			methods.show(this);
+			return false;
+		});
+		//methods.get_element();
 		
 		//$trigger = $item.find("");
-
 		
 		methods.hide();
-	
-		//alert(tmpl(settings.template, settings.obj));
-
+		
+		alert(settings.template_selectors);
+		
 		// run the start callbacks
 		if (settings.start.length)
 			$.each(settings.start, function(i,o) {
@@ -204,24 +210,38 @@ TODO:
 		if(settings.setStyle)
 			methods.setStyle();
 		
-
 	  },
-	  show : function(options) {
-	  		
-	  		
-	  		// run the before callbacks
+	  get_element : function(_elm, _trigger) {	
+		//get elements and return the clicker
+		$_elm = $(_elm); 
+		var isClass = settings.trigger.replace(/[^a-zA-Z0-9]+/g,'');
+		if(!$_elm.hasClass(isClass)){
+			$_elm = $_elm.find(settings.trigger);	
+			return $_elm;	
+		} else {
+			return $_elm;
+		}
+	  },
+	  build_html : function(){
+		
+	  },
+	  show : function(elm) {
+			
+			// run the before callbacks
 			if (settings.before.length)
 				$.each(settings.before, function(i,o) {
 					o.apply(this, [$items, settings]);
 				}); 
-			
 			//alert(tmpl(settings.template, settings.obj));
-			var obj = {
-				object : '<img src="' + $(this).attr("href") + '" />'
-			};
+			$item = methods.get_element(elm, settings.trigger);
+			obj = {
+				content : '<img src="' + $item.attr("href") + '" />'
+			}
+			
+			//alert($item.attr("class"));
 			$inner.html(tmpl(settings.template, obj));
-			
-			
+			methods.resize();
+			$outer.show();
 			
 			// run the after callbacks
 			if (settings.after.length)
@@ -235,6 +255,12 @@ TODO:
 	  hide : function(){
 			$inner.html("");
 			$outer.hide();
+	  },
+	  resize : function(){
+			var wid = $inner.width();
+			$inner.css({
+				marginLeft : (wid/2) 
+			});
 	  },
 	  close : function(){
 			methods.hide();
