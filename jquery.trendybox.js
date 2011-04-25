@@ -166,24 +166,26 @@ TODO:
 		$outer = $("#trendybox_outer");
 		$overlay = $("#trendybox_overlay");
 		$inner = $("#trendybox_inner");
-		$item = $(this);
+		$items = $(this);
 		
+		$overlay.click(function(){
+			methods.hide();
+		});		
 		
-		
-		
-		if(!$item.hasClass(settings.trigger.replace(/[^a-zA-Z0-9]+/g,''))){
-			$trigger = $item.
+		if(!$items.hasClass(settings.trigger.replace(/[^a-zA-Z0-9]+/g,''))){
+			$trigger = $items.find(settings.trigger);
 			$trigger.click(function(){
 				methods.show();
+				return false;
 			});			
 		} else {
-			$item.click(function(){
+			$items.click(function(){
 				methods.show();
+				return false;
 			});
 		}
-		//alert(settings.trigger.replace(/[^a-zA-Z0-9]+/g,''));
 		
-		
+
 		
 		//$trigger = $item.find("");
 
@@ -191,8 +193,6 @@ TODO:
 		methods.hide();
 	
 		//alert(tmpl(settings.template, settings.obj));
-		
-
 
 		// run the start callbacks
 		if (settings.start.length)
@@ -212,21 +212,28 @@ TODO:
 	  		// run the before callbacks
 			if (settings.before.length)
 				$.each(settings.before, function(i,o) {
-					o.apply($item, [$items, settings]);
+					o.apply(this, [$items, settings]);
 				}); 
 			
-			alert(tmpl(settings.template, settings.obj));
+			//alert(tmpl(settings.template, settings.obj));
+			var obj = {
+				object : '<img src="' + $(this).attr("href") + '" />'
+			};
+			$inner.html(tmpl(settings.template, obj));
+			
+			
 			
 			// run the after callbacks
 			if (settings.after.length)
 				$.each(settings.after, function(i,o) {			
-					o.apply($item, [$items, settings]);
+					o.apply(this, [$items, settings]);
 				}); 
 			   			
 			return false;
 			
 	  },
 	  hide : function(){
+			$inner.html("");
 			$outer.hide();
 	  },
 	  close : function(){

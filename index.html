@@ -51,15 +51,15 @@
 			}
 			$(".trendybox").trendybox({
 				template : $("#item_tmpl").html(),
-				trigger : '.trigger',
 				obj : dataObject
 			});
 		});
 	</script>
 	<style type="text/css">
 		
-		#trendybox_outer{ position:fixed; height:100%; width:100%; top:0; left:0; right:0; bottom:0;}
-		#trendybox_overlay{  position:absolute;height:100%; width:100%; background:#000; opacity:0.5; }
+		#trendybox_outer{ position:fixed; height:100%; width:100%; top:0; left:0; right:0; bottom:0; z-index:9997;}
+		#trendybox_overlay{  position:absolute;height:100%; width:100%; background:#000; opacity:0.5;  z-index:9998;}
+		#trendybox_inner{  z-index:9999;  position:absolute; top:20px; height:100px; width:100px; background:#fff; left:50%; margin-left:-50px;}
 		#trendybox_outer img{ border:none;}
 	</style>
 		
@@ -69,6 +69,14 @@
 		<h1>Trendybox</h1>
 	 	<div class="single-images">
 	 		<div class="trendybox">
+				<a href="images/nice.jpg" class="trigger">zoom</a>
+				<img src="images/nice-thumb.jpg" />
+			</div>
+			<div class="trendybox">
+				<a href="images/nice.jpg" class="trigger">zoom</a>
+				<img src="images/nice-thumb.jpg" />
+			</div>
+			<div class="trendybox">
 				<a href="images/nice.jpg" class="trigger">zoom</a>
 				<img src="images/nice-thumb.jpg" />
 			</div>
