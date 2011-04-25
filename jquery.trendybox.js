@@ -117,7 +117,8 @@ TODO:
 	T.isWebKit = ua.indexOf('applewebkit/') > -1;
 		  
 	// Constants	  
-	var $wrapper,
+	var $outer,
+		$wrapper,
 		$inner,
 		$items,
 		$item,
@@ -127,12 +128,22 @@ TODO:
 		maxWidth = 0,
 		minWidth = 9000,
 		totalItems = 0,
+		container = '<div class="trendybox-outer" id="trendybox_outer">' +
+			'<div class="trendybox-overlay" id="trendybox_overlay">' +
+				'<div class="trendybox-inner" id="trendybox_inner">' +
+				'</div>' + 
+			'</div>' +
+		'</div>',
 		settings = {
-		  before :          null,
-		  after :           null,
-		  build :           null,
-		  template : 		''
-		};	
+			before :          null,
+			after :           null,
+			build :           null,
+			template : 		'<%=object%>',
+			overlay_color : 'transparent',
+			overlay_opacity : 1,
+			trigger : 		'.trendybox',
+			obj : null
+		};
 	
 	function log() {
 		if (window.console && window.console.log)
@@ -150,77 +161,73 @@ TODO:
 		settings.after = settings.after ? [settings.after] : [];
 		settings.start = settings.start ? [settings.start] : [];
 		
-		// Setting up elements
+		// Setting up elements obj
+		$("body").append(container);
+		$outer = $("#trendybox_outer");
+		$overlay = $("#trendybox_overlay");
+		$inner = $("#trendybox_inner");
 		$item = $(this);
-		$wrapper = $('> '+settings.wrapperElement, this);
-		$slider = $wrapper.find('> '+settings.sliderElement);
-		$items = $slider.find('> '+settings.itemElement);
-		$single = $items.filter(":first");
-		totalItems = $items.size();
-		singleWidth = $single.outerWidth();
-		pages = Math.ceil($items.length);
+		
+		
+		
+		
+		if(!$item.hasClass(settings.trigger.replace(/[^a-zA-Z0-9]+/g,''))){
+			$trigger = $item.
+			$trigger.click(function(){
+				methods.show();
+			});			
+		} else {
+			$item.click(function(){
+				methods.show();
+			});
+		}
+		//alert(settings.trigger.replace(/[^a-zA-Z0-9]+/g,''));
+		
+		
+		
+		//$trigger = $item.find("");
+
+		
+		methods.hide();
+	
+		//alert(tmpl(settings.template, settings.obj));
+		
+
 
 		// run the start callbacks
 		if (settings.start.length)
 			$.each(settings.start, function(i,o) {
-				o.apply($item, [settings]);
+				o.apply($item, [$items, settings]);
 			}); 		
 		
 		//Set Styling if the mood is right 
 		if(settings.setStyle)
 			methods.setStyle();
 		
-		if(settings.timeout > 0)
-			setTimeout(methods.start(),settings.timeout);
-		else if(settings.time > 0) {
-			methods.slide();
-			methods.start();
-		} 
-			
-		if(settings.pauseOnHover){
-			$outer.hover(function(){
-				methods.stop();
-			}, function(){
-				methods.start();
-			});
-		}
+
 	  },
 	  show : function(options) {
 	  		
-	  		$currentItem = $slider.find('> li:first:not(:animated)');
-	  		$nextItem = $currentItem.next();
 	  		
 	  		// run the before callbacks
 			if (settings.before.length)
 				$.each(settings.before, function(i,o) {
-					o.apply($nextItem, [$currentItem, $nextItem, $items, settings]);
+					o.apply($item, [$items, settings]);
 				}); 
-	  	
-	  		curentSingleWidth = $currentItem.width();
-	  
-			$($currentItem.clone()).appendTo($slider);
-							
-			$currentItem.animate({
-				marginRight : '+=' + dir*curentSingleWidth
-			}, settings.speed, function () {
-				$(this).remove();
-				
-				$currentItem = $slider.find('> li:first:not(:animated)');
-				$nextItem = $currentItem.next();
-				
-				// run the after callbacks
-				if (settings.after.length)
-					$.each(settings.after, function(i,o) {			
-						o.apply($nextItem, [$currentItem, $nextItem, $items, settings]);
-					}); 
-					
-			});  
+			
+			alert(tmpl(settings.template, settings.obj));
+			
+			// run the after callbacks
+			if (settings.after.length)
+				$.each(settings.after, function(i,o) {			
+					o.apply($item, [$items, settings]);
+				}); 
 			   			
 			return false;
 			
 	  },
 	  hide : function(){
-			timer = setInterval(methods.slide, settings.time);
+			$outer.hide();
 	  },
 	  close : function(){
 			methods.hide();
@@ -233,7 +240,9 @@ TODO:
 			
 	  		$outer.css({
 	  			position : "relative",
-	  			overflow : "hidden"
+	  			overflow : "hidden",
+				background : settings.overlay_color,
+				opacity : settings.overlay_opacity
 	  		});
 	  
 	  		$wrapper.css({

@@ -8,11 +8,7 @@
 	<script src="lib/jquery.js" type="text/javascript" language="javascript"></script>
 	<script src="jquery.trendybox.js" type="text/javascript" language="javascript"></script>
 	
-	<script type="text/javascript">
-		$(document).ready(function(){
-			$(".trendybox").trendybox();
-		});
-	</script>
+
 	<script type="text/html" id="item_tmpl">
 	  <div class="trendybox_data">
 		<%=object%>
@@ -23,6 +19,7 @@
 	  </div>
 	</script>
 	<script type="text/javascript">
+		/*
 		$(document).ready(function(){
 			var dataObject = {
 				id : 30,
@@ -41,15 +38,41 @@
 			var str = tmpl("item_tmpl", dataObject);
 			$("#debug").append(str);
 		});
-	</script>
+		*/
 		
+	</script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var dataObject = {
+				id : 76,
+				comments : 32,
+				title : 'new data',
+				object : 'new trendy object'
+			}
+			$(".trendybox").trendybox({
+				template : $("#item_tmpl").html(),
+				trigger : '.trigger',
+				obj : dataObject
+			});
+		});
+	</script>
+	<style type="text/css">
+		
+		#trendybox_outer{ position:fixed; height:100%; width:100%; top:0; left:0; right:0; bottom:0;}
+		#trendybox_overlay{  position:absolute;height:100%; width:100%; background:#000; opacity:0.5; }
+		#trendybox_outer img{ border:none;}
+	</style>
 		
 </head>
 <body>
 	<div class="container">
 		<h1>Trendybox</h1>
 	 	<div class="single-images">
-	 	
+	 		<div class="trendybox">
+				<a href="images/nice.jpg" class="trigger">zoom</a>
+				<img src="images/nice-thumb.jpg" />
+			</div>
+			
 	 	</div>
 		<div class="gallery">
 			
