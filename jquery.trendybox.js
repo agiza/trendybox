@@ -57,38 +57,6 @@ TODO:
 
 // Simple JavaScript Templating
 // John Resig - http://ejohn.org/ - MIT Licensed
-(function(){
-  var cache = {};
-  
-  this.tmpl = function tmpl(str, data){
-    // Figure out if we're getting a template, or if we need to
-    // load the template - and be sure to cache the result.
-    alert(cache);
-    var fn = !/\W/.test(str) ? cache[str] = cache[str] || tmpl(document.getElementById(str).innerHTML) :
-      
-      // Generate a reusable function that will serve as a template
-      // generator (and which will be cached).
-      new Function("obj",
-        "var p=[],print=function(){p.push.apply(p,arguments);};" +
-        
-        // Introduce the data as local variables using with(){}
-        "with(obj){p.push('" +
-        
-        // Convert the template into pure JavaScript
-        str
-          .replace(/[\r\t\n]/g, " ")
-          .split("<%").join("\t")
-          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
-          .replace(/\t=(.*?)%>/g, "',$1,'")
-          .split("\t").join("');")
-          .split("%>").join("p.push('")
-          .split("\r").join("\\'")
-      + "');}return p.join('');");
-    
-    // Provide some basic currying to the user
-    return data ? fn( data ) : fn;
-  };
-})();
 
 (function( $ ){
 	
@@ -131,6 +99,7 @@ TODO:
 		minWidth = 9000,
 		totalItems = 0,
 		selector = "",
+		cache = {},
 		container = '<div class="trendybox-outer" id="trendybox_outer">' +
 			'<div class="trendybox-overlay" id="trendybox_overlay">' +
 				'<div class="trendybox-inner" id="trendybox_inner">' +
@@ -163,6 +132,34 @@ TODO:
 	};
 		  
 	var methods = {
+	    tmpl : function(str, data){
+	    // Figure out if we're getting a template, or if we need to
+	    // load the template - and be sure to cache the result.
+	    alert(str);
+	    var fn = !/\W/.test(str) ? cache[str] = cache[str] || tmpl(document.getElementById(str).innerHTML) :
+	      
+	      // Generate a reusable function that will serve as a template
+	      // generator (and which will be cached).
+	      new Function("obj",
+	        "var p=[],print=function(){p.push.apply(p,arguments);};" +
+	        
+	        // Introduce the data as local variables using with(){}
+	        "with(obj){p.push('" +
+	        
+	        // Convert the template into pure JavaScript
+	        str
+	          .replace(/[\r\t\n]/g, " ")
+	          .split("<%").join("\t")
+	          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+	          .replace(/\t=(.*?)%>/g, "',$1,'")
+	          .split("\t").join("');")
+	          .split("%>").join("p.push('")
+	          .split("\r").join("\\'")
+	      + "');}return p.join('');");
+	    
+	    // Provide some basic currying to the user
+	    return data ? fn( data ) : fn;
+	  },
 	  init : function( options ) {
 	  
 	  	// set selector for parenting
@@ -243,13 +240,13 @@ TODO:
 				}); 
 			
 				
-			temp = tmpl(settings.template);
+			temp = methods.tmpl(settings.template);
 			alert(temp);
 			o = {
 				content : 'something'
 			}
 			
-			//alert(tmpl(settings.template, o));
+			alert(tmpl(settings.template, o));
 			
 			$item = $(_elm);
 			$trigger = $(_trigger);
@@ -264,7 +261,7 @@ TODO:
 			}
 			
 			//template = tmpl(settings.template,o);
-			alert(template(o));
+			//alert(methods.template(o));
 			
 			//$inner.html(template);
 			
