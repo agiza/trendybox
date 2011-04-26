@@ -19,8 +19,7 @@
 	  </div>
 	</script>
 	<script type="text/javascript">
-		/*
-		$(document).ready(function(){
+		/* $(document).ready(function(){
 			var dataObject = {
 				id : 30,
 				comments : 20,
@@ -36,18 +35,28 @@
 				object : 'new trendy object'
 			}
 			var str = tmpl("item_tmpl", dataObject);
-			$("#debug").append(str);
-		});
+				$("#debug").append(str);
+			});
 		*/
-		
 	</script>
 	<script type="text/javascript">
-		$(document).ready(function(){
+		$(document).ready(function(){			
 			$(".trendybox").trendybox({
-				template : $("#item_tmpl").html(),
-				//obj : dataObject
+				template :  $("#item_tmpl").html(),
+				nameSelector : ".trendybox",
 				trigger : '.trigger',
-				template_selectors : new Object('.title', '.comment', '.comment_total')
+				template_selectors : {
+					id : ".id",
+					title : ".title",
+					comments : ".comment_total",
+				},
+				gap : {
+					top : 0,
+					right : 0,
+					bottom : 0,
+					left : 0
+				},
+				width : 800
 			});
 		});
 	</script>
@@ -70,7 +79,7 @@
 		<h1>Trendybox</h1>
 	 	<div class="single-images">
 	 		<div class="trendybox">
-				<a href="images/nice.jpg" class="trigger" onclick="return false;">zoom</a>
+				<div><a href="images/nice.jpg" class="trigger" onclick="return false;">zoom</a></div>
 				<img src="images/nice-thumb.jpg" />
 				<div class="title hide">the title of number one</div>
 				<div class="id hide">111</div>

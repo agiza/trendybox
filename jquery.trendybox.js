@@ -63,9 +63,8 @@ TODO:
   this.tmpl = function tmpl(str, data){
     // Figure out if we're getting a template, or if we need to
     // load the template - and be sure to cache the result.
-    var fn = !/\W/.test(str) ?
-      cache[str] = cache[str] ||
-        tmpl(document.getElementById(str).innerHTML) :
+    alert(cache);
+    var fn = !/\W/.test(str) ? cache[str] = cache[str] || tmpl(document.getElementById(str).innerHTML) :
       
       // Generate a reusable function that will serve as a template
       // generator (and which will be cached).
@@ -123,12 +122,15 @@ TODO:
 		$inner,
 		$items,
 		$item,
+		$triggers,
+		$trigger,
 		$nextItem,
 		$currentItem,
 		totalWidth = 0,
 		maxWidth = 0,
 		minWidth = 9000,
 		totalItems = 0,
+		selector = "",
 		container = '<div class="trendybox-outer" id="trendybox_outer">' +
 			'<div class="trendybox-overlay" id="trendybox_overlay">' +
 				'<div class="trendybox-inner" id="trendybox_inner">' +
@@ -139,12 +141,20 @@ TODO:
 			before :          null,
 			after :           null,
 			build :           null,
+			nameSelector :    '.trendybox',
 			template : 		'<%=content%>',
 			overlay_color : 'transparent',
 			overlay_opacity : 1,
 			trigger : 		'.trendybox',
-			template_selectors : [],
-			obj : null
+			template_selectors : null,
+			obj : null,
+			gap : {
+				top : 0,
+				right : 0,
+				bottom : 0,
+				left : 0
+			},
+			width : 800
 		};
 	
 	function log() {
@@ -153,8 +163,10 @@ TODO:
 	};
 		  
 	var methods = {
-	  init : function( options ) {  
-
+	  init : function( options ) {
+	  
+	  	// set selector for parenting
+	  	
 		if ( options ) { 
         	settings = $.extend( settings , options );
 		}	
@@ -174,73 +186,93 @@ TODO:
 			methods.hide();
 		});		
 		
-		/*	if(!$items.hasClass(settings.trigger.replace(/[^a-zA-Z0-9]+/g,''))){
-			$trigger = $items.find(settings.trigger);
-			$trigger.click(function(){
-				methods.show();
-				return false;
-			});			
-		} else {
+		methods.hide();
+				
+		if(methods.is_trigger($items, settings.trigger)){
 			$items.click(function(){
-				methods.show();
-				return false;
-			});
+				methods.show($(this));
+			});	
+		} else {
+			$triggers = $items.find(settings.trigger);
+			$triggers.click(function(){
+				$item = methods.get_element(this);		
+				methods.show($item, $(this));
+			});			
 		}
-		*/
-		trigger = methods.get_element($items, settings.trigger);
-		trigger.click(function(){
-			methods.show(this);
+		
+		$(trigger).click(function(){
+			methods.show($(this));
 			return false;
 		});
-		//methods.get_element();
-		
-		//$trigger = $item.find("");
 		
 		methods.hide();
-		
-		//alert(settings.template_selectors);
-		
+				
 		// run the start callbacks
 		if (settings.start.length)
 			$.each(settings.start, function(i,o) {
 				o.apply($item, [$items, settings]);
 			}); 		
 		
-		//Set Styling if the mood is right 
-		if(settings.setStyle)
-			methods.setStyle();
-		
 	  },
-	  get_element : function(_elm, _trigger) {	
+	  get_element : function(_elm){
+	  	$item = $(_elm).parentsUntil(settings.nameSelector).parent();
+	  	return $item;
+	  },
+	  is_trigger : function(_elm, _trigger) {	
 		//get elements and return the clicker
 		$_elm = $(_elm); 
 		var isClass = settings.trigger.replace(/[^a-zA-Z0-9]+/g,'');
-		if(!$_elm.hasClass(isClass)){
-			$_elm = $_elm.find(settings.trigger);	
-			return $_elm;	
+		if($_elm.hasClass(isClass)){
+			return true;	
 		} else {
-			return $_elm;
+			return false;
 		}
 	  },
 	  build_html : function(){
-		
+	  		var $table = $("#parent").children("table");
+			$table.css({ position: "absolute", visibility: "hidden", display: "block" });
+			var tableWidth = $table.outerWidth();
+			$table.css({ position: "", visibility: "", display: "" });
 	  },
-	  show : function(elm) {
+	  show : function(_elm, _trigger) {
 			
 			// run the before callbacks
 			if (settings.before.length)
 				$.each(settings.before, function(i,o) {
 					o.apply(this, [$items, settings]);
 				}); 
-			//alert(tmpl(settings.template, settings.obj));
-			$item = methods.get_element(elm, settings.trigger);
-			obj = {
-				content : '<img src="' + $item.attr("href") + '" />'
+			
+				
+			temp = tmpl(settings.template);
+			alert(temp);
+			o = {
+				content : 'something'
 			}
 			
-			alert(tmpl(settings.template, obj));
-			$inner.html(tmpl(settings.template, obj));
-			methods.resize();
+			//alert(tmpl(settings.template, o));
+			
+			$item = $(_elm);
+			$trigger = $(_trigger);
+			
+			// to be replaced with build html
+			href = "";
+			if(!(href = $item.attr("href"))){
+				href = $trigger.attr("href");
+			}
+			o = {
+				content : '<img src="' + href + '" />'
+			}
+			
+			//template = tmpl(settings.template,o);
+			alert(template(o));
+			
+			//$inner.html(template);
+			
+			//$inner.css({ position: "absolute", visibility: "hidden", display: "block" });
+			//var theWidth = $table.outerWidth();
+			//$inner.css({ position: "", visibility: "", display: "" });
+			//alert(theWidth);
+			//methods.resize();
 			$outer.show();
 			
 			// run the after callbacks
@@ -268,48 +300,6 @@ TODO:
 	  next : function(){
 	  },
 	  prev : function(){
-	  },
-	  setStyle : function(){
-			
-	  		$outer.css({
-	  			position : "relative",
-	  			overflow : "hidden",
-				background : settings.overlay_color,
-				opacity : settings.overlay_opacity
-	  		});
-	  
-	  		$wrapper.css({
-	  			position : 'absolute',
-	  			overflow : 'visible',
-	  			width : totalWidth+maxWidth
-	  		});
-	  		
-	  		if(settings.direction == "reverse"){
-	  			$items.css({float:'right'});
-	  			$wrapper.css({
-	  				right : 0,
-	  				marginLeft : (-1)*((totalWidth+maxWidth)-(minWidth*totalItems))
-	  			});
-	  		} else {
-	  			$items.css({float:'left'});
-	  			$wrapper.css({left : 0});
-	  		}
-	  		
-	  		if(settings.setDimensions){
-	  		
-		  		iHeight = $single.height();
-		  		iWidth = $single.width();
-		  		
-		  		iWidth = iWidth > 0 ? iWidth : settings.itemWidth;
-		  		iHeight = iHeight > 0 ? iHeight : settings.itemWidth;
-	
-				$items.css({
-		  			height:	iHeight,
-		  			width: iWidth
-		  		});
-		  		
-		  	}
-	
 	  }
 	};
 
@@ -333,6 +323,11 @@ TODO:
 	};
 
 })( jQuery );
+
+
+// Helperzzzzz
+
+
 
 
 
