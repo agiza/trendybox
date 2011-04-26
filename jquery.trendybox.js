@@ -198,7 +198,7 @@ TODO:
 		
 		methods.hide();
 		
-		alert(settings.template_selectors);
+		//alert(settings.template_selectors);
 		
 		// run the start callbacks
 		if (settings.start.length)
@@ -238,7 +238,7 @@ TODO:
 				content : '<img src="' + $item.attr("href") + '" />'
 			}
 			
-			//alert($item.attr("class"));
+			alert(tmpl(settings.template, obj));
 			$inner.html(tmpl(settings.template, obj));
 			methods.resize();
 			$outer.show();
